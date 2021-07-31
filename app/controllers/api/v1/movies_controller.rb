@@ -1,45 +1,24 @@
 class Api::V1::MoviesController < ApplicationController
-    def index
-        @movies = Movie.all
-    
-        render json: @movies
-      end
-    
-      def show
-        @movie = Movie.find(params[:id])
-    
-        render json: @movie
-      end
-    
-      def create
-        @movie = Movie.create(movie_params)
-    
-          render json: @movie
-      end
-    
-    
-      def update
-        @movie = Movie.find(params[:id])
-        @movie.update(movie_params)
-    
-          render json: @movie
-      end
-    
-      def ratings
-        @movies = Movie.grouped_ratings #gives access to scope method
-      end
-    
-      def destroy
-        @movie = Movie.find(params[:id])
-        @movie.delete
-    
-        render json: {movieId: @movie.id}
-      end
-    
-      private
-      def movie_params
-        params.require(:data).permit(:title, :release_year, :description, :image_url, :starring_actors, :genre_id)
+    #skip_before_action :authorized, only: [:index]
 
-      end
+    def index 
+        movies = Movie.all 
+        
+        render json: MovieSerializer.new(movies)
     end
 
+    def create
+        movie = Movie.new(movie_params)
+        if movie.save
+            render json: MovieSerializer.new(movie), status: :accepted
+        else
+            render json: {errors: movie.errors.full_messages}, status: :unprocessible_entity
+        end
+    end
+
+    private 
+
+    def movie_params
+        params.require(:movie).permit(:title, :release_year, :description, :image_url, :starring_actors, :genre_id)
+    end
+end
