@@ -16,6 +16,20 @@ class Api::V1::MoviesController < ApplicationController
         end
     end
 
+    def update
+        @movie = Movie.find(params[:id])
+        @movie.update(movie_params)
+
+        render json: MovieSerializer.new(movies)
+    end
+
+    def destroy
+        @movie = Movie.find(params[:id])
+        @movie.delete
+
+        render json: MovieSerializer.destroy(movies)
+    end
+
     private 
 
     def movie_params
