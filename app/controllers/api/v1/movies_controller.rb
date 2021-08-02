@@ -1,5 +1,6 @@
 class Api::V1::MoviesController < ApplicationController
     #skip_before_action :authorized, only: [:index]
+    before_action :find_movie, only: [:update, :destroy]
 
     def index 
         movies = Movie.all 
@@ -26,18 +27,16 @@ class Api::V1::MoviesController < ApplicationController
     end
 
     def destroy
-        category = Movie.find_by(id: params[:id])
-        movie.destroy
-        render json: movie
-      end
+        @movie.destroy
+    end 
 
     private 
 
     def movie_params
-        params.require(:movie).permit(:title, :release_year, :description, :image_url, :starring_actors, :genre_id)
+        params.require(:movie).permit(:title, :release_year, :description, :image_url, :starring_actors, :genre_id, :id)
     end
 
     def find_movie
         @movie = Movie.find(params[:id])
-      end
+    end
 end

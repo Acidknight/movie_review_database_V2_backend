@@ -10,7 +10,7 @@
      origins '*'
 
      resource '*',
-       headers: :any,
+       headers: :any, "Access-Control-Allow-Origin", "*"
        methods: [:get, :post, :put, :patch, :delete, :options, :head]
    end
 end
